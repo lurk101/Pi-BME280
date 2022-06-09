@@ -1,10 +1,10 @@
 
-#include <linux/i2c-dev.h>
-#include <sys/ioctl.h>
 #include <fcntl.h>
+#include <linux/i2c-dev.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/ioctl.h>
 #include <sys/types.h>
 #include <unistd.h>
 
@@ -122,7 +122,6 @@ int main(int argc, char* argv[]) {
         exit(1);
     }
 
-    dev.intf = BME280_I2C_INTF;
     dev.read = user_i2c_read;
     dev.write = user_i2c_write;
     dev.delay_us = user_delay_us;
@@ -158,7 +157,7 @@ int8_t user_i2c_read(uint8_t reg_addr, uint8_t* data, uint32_t len, void* intf_p
     write(id.fd, &reg_addr, 1);
     read(id.fd, data, len);
 
-    return 0;
+    return BME280_INTF_RET_SUCCESS;
 }
 
 /**
@@ -222,20 +221,16 @@ int8_t stream_sensor_data_forced_mode(struct bme280_dev* dev) {
     /* Variable to define the selecting sensors */
     uint8_t settings_sel = 0;
 
-    /* Variable to store minimum wait time between consecutive measurement in force mode */
-    uint32_t req_delay;
-
     /* Structure to get the pressure, temperature and humidity values */
     struct bme280_data comp_data;
 
     /* Recommended mode of operation: Indoor navigation */
     dev->settings.osr_h = BME280_OVERSAMPLING_1X;
-    dev->settings.osr_p = BME280_OVERSAMPLING_16X;
-    dev->settings.osr_t = BME280_OVERSAMPLING_2X;
-    dev->settings.filter = BME280_FILTER_COEFF_16;
+    dev->settings.osr_p = BME280_OVERSAMPLING_1X;
+    dev->settings.osr_t = BME280_OVERSAMPLING_1X;
+    dev->settings.filter = BME280_FILTER_COEFF_OFF;
 
-    settings_sel =
-        BME280_OSR_PRESS_SEL | BME280_OSR_TEMP_SEL | BME280_OSR_HUM_SEL | BME280_FILTER_SEL;
+    settings_sel = BME280_OSR_PRESS_SEL | BME280_OSR_TEMP_SEL | BME280_OSR_HUM_SEL;
 
     /* Set the sensor settings */
     rslt = bme280_set_sensor_settings(settings_sel, dev);
@@ -249,7 +244,6 @@ int8_t stream_sensor_data_forced_mode(struct bme280_dev* dev) {
 
     /*Calculate the minimum delay required between consecutive measurement based upon the sensor
      * enabled and the oversampling configuration. */
-    req_delay = bme280_cal_meas_delay(&dev->settings);
 
     /* Continuously stream sensor data */
     while (1) {
@@ -261,7 +255,7 @@ int8_t stream_sensor_data_forced_mode(struct bme280_dev* dev) {
         }
 
         /* Wait for the measurement to complete and print data */
-        dev->delay_us(req_delay, dev->intf_ptr);
+        dev->delay_us(1000000, dev->intf_ptr);
         rslt = bme280_get_sensor_data(BME280_ALL, &comp_data, dev);
         if (rslt != BME280_OK) {
             fprintf(stderr, "Failed to get sensor data (code %+d).", rslt);

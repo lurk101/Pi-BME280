@@ -246,22 +246,6 @@ void bme280_parse_sensor_data(const uint8_t* reg_data, struct bme280_uncomp_data
 int8_t bme280_compensate_data(uint8_t sensor_comp, const struct bme280_uncomp_data* uncomp_data,
                               struct bme280_data* comp_data, struct bme280_calib_data* calib_data);
 
-/**
- * Generic API for measuring sensor delay
- */
-
-/**
- * This API is used to calculate the maximum delay in milliseconds required for the
- * temperature/pressure/humidity(which ever are enabled) measurement to complete.
- * The delay depends upon the number of sensors enabled and their oversampling configuration.
- *
- * param[in] settings : contains the oversampling configurations.
- *
- * return delay required in milliseconds.
- *
- */
-uint32_t bme280_cal_meas_delay(const struct bme280_settings* settings);
-
 #ifdef __cplusplus
 }
 #endif

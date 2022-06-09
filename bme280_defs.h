@@ -195,32 +195,27 @@
 #define BME280_SOFT_RESET_COMMAND (0xB6)
 #define BME280_STATUS_IM_UPDATE (0x01)
 
-/*!
- * @brief Interface selection Enums
+/**
+ * Interface selection Enums
  */
-enum bme280_intf {
-    /*< SPI interface */
-    BME280_SPI_INTF,
-    /*< I2C interface */
-    BME280_I2C_INTF
-};
+enum bme280_intf { BME280_I2C_INTF };
 
-/*!
- * @brief Type definitions
+/**
+ * Type definitions
  */
 
-/*!
- * @brief Bus communication function pointer which should be mapped to
+/**
+ * Bus communication function pointer which should be mapped to
  * the platform specific read functions of the user
  *
- * @param[in] reg_addr       : Register address from which data is read.
- * @param[out] reg_data     : Pointer to data buffer where read data is stored.
- * @param[in] len            : Number of bytes of data to be read.
- * @param[in, out] intf_ptr  : Void pointer that can enable the linking of descriptors
+ * param[in] reg_addr       : Register address from which data is read.
+ * param[out] reg_data     : Pointer to data buffer where read data is stored.
+ * param[in] len            : Number of bytes of data to be read.
+ * param[in, out] intf_ptr  : Void pointer that can enable the linking of descriptors
  *                                  for interface related call backs.
  *
- * @retval   0 -> Success.
- * @retval Non zero value -> Fail.
+ * retval   0 -> Success.
+ * retval Non zero value -> Fail.
  *
  */
 typedef BME280_INTF_RET_TYPE (*bme280_read_fptr_t)(uint8_t reg_addr, uint8_t* reg_data,
@@ -385,18 +380,9 @@ struct bme280_settings {
  * @brief bme280 device structure
  */
 struct bme280_dev {
-    /*< Chip Id */
-    uint8_t chip_id;
-
-    /*< Interface function pointer used to enable the device address for I2C and chip selection for
+    /* Interface function pointer used to enable the device address for I2C and chip selection for
      * SPI */
     void* intf_ptr;
-
-    /*< Interface Selection
-     * For SPI, intf = BME280_SPI_INTF
-     * For I2C, intf = BME280_I2C_INTF
-     * */
-    enum bme280_intf intf;
 
     /*< Read function pointer */
     bme280_read_fptr_t read;
