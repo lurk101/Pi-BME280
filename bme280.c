@@ -905,15 +905,8 @@ static double compensate_pressure(const struct bme280_uncomp_data* uncomp_data,
  */
 static double compensate_humidity(const struct bme280_uncomp_data* uncomp_data,
                                   const struct bme280_calib_data* calib_data) {
-    double humidity;
-    double humidity_min = 0.0;
-    double humidity_max = 100.0;
-    double var1;
-    double var2;
-    double var3;
-    double var4;
-    double var5;
-    double var6;
+    double humidity, humidity_min = 0.0, humidity_max = 100.0;
+    double var1, var2, var3, var4, var5, var6;
 
     var1 = ((double)calib_data->t_fine) - 76800.0;
     var2 = (((double)calib_data->dig_h4) * 64.0 + (((double)calib_data->dig_h5) / 16384.0) * var1);
@@ -1191,14 +1184,14 @@ static void parse_humidity_calib_data(const uint8_t* reg_data, struct bme280_dev
  * wants to modify in the sensor.
  */
 static uint8_t are_settings_changed(uint8_t sub_settings, uint8_t desired_settings) {
-    uint8_t settings_changed = FALSE;
+    uint8_t settings_changed = 0;
 
     if (sub_settings & desired_settings) {
         /* User wants to modify this particular settings */
-        settings_changed = TRUE;
+        settings_changed = 1;
     } else {
         /* User don't want to modify this particular settings */
-        settings_changed = FALSE;
+        settings_changed = 0;
     }
 
     return settings_changed;
