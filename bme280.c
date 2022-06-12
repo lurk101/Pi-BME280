@@ -407,7 +407,6 @@ int8_t bme280_set_regs(uint8_t* reg_addr, const uint8_t* reg_data, uint8_t len,
         len = 10;
 
     uint16_t temp_len;
-    uint8_t reg_addr_cnt;
 
     if (len != 0) {
         temp_buff[0] = reg_data[0];
