@@ -178,9 +178,8 @@ int8_t user_i2c_write(uint8_t reg_addr, const uint8_t* data, uint32_t len, void*
     buf = malloc(len + 1);
     buf[0] = reg_addr;
     memcpy(buf + 1, data, len);
-    if (write(id.fd, buf, len + 1) < (uint16_t)len) {
+    if (write(id.fd, buf, len + 1) < (uint16_t)len)
         return BME280_E_COMM_FAIL;
-    }
 
     free(buf);
 
@@ -224,7 +223,6 @@ int8_t stream_sensor_data_forced_mode(struct bme280_dev* dev) {
     rslt = bme280_set_sensor_settings(settings_sel, dev);
     if (rslt != BME280_OK) {
         fprintf(stderr, "Failed to set sensor settings (code %+d).", rslt);
-
         return rslt;
     }
 
